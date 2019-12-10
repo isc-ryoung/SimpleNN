@@ -1,6 +1,5 @@
 Class ISC.Sample.NN Extends %SerialObject
 {
-
 /// 
 /// do ##class(ISC.Sample.NN).main()
 /// do ##class(ISC.Sample.NN).main(1, 48, 132)
