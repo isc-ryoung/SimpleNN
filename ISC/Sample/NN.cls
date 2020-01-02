@@ -6,7 +6,6 @@ Class ISC.Sample.NN Extends %SerialObject
 ///
 
 Parameter TRUE = 1;
-
 Parameter FALSE = 0;
 
 /// Height of screen, in characters
@@ -86,7 +85,6 @@ ClassMethod Usage(type)
 Method %OnNew(plot As %Integer, rows As %Integer, columns As %Integer, iters as %Integer) As %Status
 {
 	set retVal = $$$OK
-
  	set ..iterations = iters	
 	set ..plot = plot 
 	
@@ -110,16 +108,29 @@ Method %OnNew(plot As %Integer, rows As %Integer, columns As %Integer, iters as 
 /// Learning loop
 Method Run()
 {
-    //set nn = ##class(%User.NN).%New()
-	set X = [[0,0],[0, 1], [1, 0], [1, 1]]
-    set Y = [[0], [1], [1], [0]]
-    set m = X.%Size()
+	set print=..#FALSE
+	set XI=""
+	set YI=""
+	do ..createInOutArrays(.XI, .YI)
+	do ..print2DArray("Y",.YI, print)
+	do ..print2DArray("X",.XI, print)
+	set m = 1+$order(XI(""),-1)
     set nodes = 400
-        	    
-    set X = ##class(NP).T(X)
-    set Y = ##class(NP).T(Y)
+	
+	set print=..#TRUE	        	    
+    set Y = ""
+    do ##class(NP).T(.YI, .Y)
+	do ..print2DArray("Y",.Y, print)
 
-    set W1 = ##class(NP).random(nodes, 2)
+	
+    set X = ""
+    do ##class(NP).T(.XI, .X)
+	do ..print2DArray("X",.X, print)
+
+    set W1 = ""
+    do ##class(NP).random(nodes, 2, .W1)
+	do ..print2DArray("W1",.W1, print)
+    
     set b1 = ##class(NP).initialise(nodes, m, 0)
     
     set W2 = ##class(NP).random(1, nodes)
@@ -184,6 +195,27 @@ Method Run()
         
     }
     write !,"Program complete."
+}
+
+/// Initialise input and output arrays
+Method createInOutArrays(X, Y){
+	
+	//set X = [[0,0],[0, 1], [1, 0], [1, 1]]
+	set X(0,0)=0
+	set X(1,0)=0
+	set X(2,0)=1
+	set X(3,0)=1
+	
+	set X(0,1)=0
+	set X(1,1)=1
+	set X(2,1)=0
+	set X(3,1)=1
+
+    //set Y = [[0], [1], [1], [0]]	
+	set Y(0,0)=0
+	set Y(1,0)=1
+	set Y(2,0)=1
+	set Y(3,0)=0		
 }
 
 /// Displays learning progress and statistics
@@ -265,9 +297,33 @@ Method log(msg, print)
 	}
 }
 
+Method print2DArray(name, array, print){
+	if 'print{
+		quit
+	}
+	
+	set isize = 1+$order(array(""),-1)
+	set jsize = 1+$order(array(0, ""),-1)
+
+	write name,":",isize,"x",jsize,":["
+	for i=0:1:isize-1{
+		write "["
+		for j=0:1:jsize-1{
+			write array(i,j)
+			if j<(jsize-1){
+				write ","
+			}
+		}	
+		write "]"
+		if i<(isize-1){
+			write ","
+		}
+	}
+	write "]", !
+}
+
 Method displayText(len)
 {
-
 	set text = "*"
 	for i=2:1:len-1{
 		set text = text _ "-"		

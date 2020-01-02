@@ -8,22 +8,15 @@ Class ISC.Sample.NP
 ///  @param a matrix
 ///  @return b = A^T
 /// 
-classMethod  T(a) {
-	set y =  a.%Size()        
-	set iter = a.%GetIterator().%GetNext(.key, .value)        
-	set x = value.%Size()
+classMethod  T(a, b) {
+	set isize = 1+$order(a(""),-1)
+	set jsize = 1+$order(a(0, ""),-1)
 
-    // how do you create a dynamic array of particular size
-    // what is the difference between a normal array and a dynamic array
-    set b = []
-    for i = 0:1: x-1 {
-    	set arr = []
-        for j = 0:1: y-1 {
-        	do arr.%Push(a.%Get(j).%Get(i))
+    for i = 0:1: isize-1 {
+        for j = 0:1: jsize-1 {
+        	set b(j, i)=a(i,j)
         }
-        do b.%Push(arr)
 	}
-    return b
 }
 
 
@@ -215,16 +208,12 @@ classMethod sigmoid( a) {
 /// @param n
 /// @return random m-by-n matrix with values between 0 and 1
 ///
-classMethod random(m, n) {
-	set outerArr = []
+classMethod random(m, n, array) {
 	for i = 0:1: m-1 {
-		set innerArr = []
 		for j = 0:1: n-1 {
-			do innerArr.%Push($random(1000)/1000)
+			set array(i, j)=($random(1000)/1000)
 		}
-		do outerArr.%Push(innerArr)
     }
-    return outerArr
 }
 
 
